@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/USER/Desktop/SQlite Database/mydatabase.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="browser pragmas query structure" current="2"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="8133"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,28:mainHighestDeathCountByContinent"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Covid_deaths" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="4" mode="0"/></sort><column_widths><column index="1" value="70"/><column index="2" value="70"/><column index="3" value="74"/><column index="4" value="73"/><column index="5" value="77"/><column index="6" value="84"/><column index="7" value="80"/><column index="8" value="152"/><column index="9" value="92"/><column index="10" value="88"/><column index="11" value="160"/><column index="12" value="161"/><column index="13" value="157"/><column index="14" value="229"/><column index="15" value="169"/><column index="16" value="165"/><column index="17" value="237"/><column index="18" value="128"/><column index="19" value="88"/><column index="20" value="165"/><column index="21" value="101"/><column index="22" value="178"/><column index="23" value="157"/><column index="24" value="234"/><column index="25" value="170"/><column index="26" value="247"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Covid_vaccination" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths/><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="HighestDeathCountByContinent" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="70"/><column index="2" value="130"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="PercentPopulationVaccinated" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="71"/><column index="2" value="63"/><column index="3" value="40"/><column index="4" value="76"/><column index="5" value="124"/><column index="6" value="165"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Percentage_population_vaccinated" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="70"/><column index="2" value="74"/><column index="3" value="73"/><column index="4" value="76"/><column index="5" value="124"/><column index="6" value="165"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="PopvsVac" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths/><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">
+* Covid 19 Data Exploration
+
+* Skills used in this exploratory analysis are: Windows fuctions, joins, temp tables, converting data types, aggregate functions and views
+
+
+-- Selecting the data
+
+select * from Covid_deaths where continent is not null
+
+
+-- Looking at the total cases and total deaths
+-- Showing the death percentage in Nigeria 
+
+select location, date, total_cases, total_deaths,(total_deaths*1.0 /total_cases)*100 as death_percentage
+from Covid_deaths where location like '%Nigeria%' 
+and continent is not null
+
+
+
+-- Looking at total cases vs population
+-- Percentage of population that got covid in Nigeria
+
+select location, date, total_cases, population,(total_cases*1.0/population)*100 as population_percentage_infected
+from Covid_deaths where location like '%Nigeria%'
+
+
+
+-- Countries with the highest infection rate compared to the population
+
+select location, population, date, max(total_cases) as highest_Infection_count, Max((total_cases*1.0/population))*100 as population_percentage_infected
+from Covid_deaths
+group by location, population
+order by population_percentage_infected desc
+
+
+-- Countries with the highest death count per population
+
+select location, max(cast(total_deaths as int)) as total_death_count
+from Covid_deaths
+where continent is not null
+group by location
+order by total_death_count desc
+
+
+
+-- Continents with the highest death count per population 
+
+select continent, max(cast(total_deaths as int)) as total_death_count
+from Covid_deaths
+where continent is not null
+group by continent
+order by total_death_count desc
+
+
+-- Creating view of continents with highest death count per population
+
+CREATE VIEW HighestDeathCountByContinent as
+select continent, max(cast(total_deaths as int)) as total_death_count
+from Covid_deaths
+where continent is not null
+group by continent
+order by total_death_count desc
+
+
+-- Global numbers
+
+select sum(new_cases) as total_newcases, sum(cast(new_deaths as int)) as total_deaths, 
+sum(cast(new_deaths as real))/sum(new_cases)*100 as Death_percentage
+from Covid_deaths where continent is not null
+
+
+-- Total population vs vaccinations
+
+select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations, SUM(cast(vac.new_vaccinations as int)) OVER (Partition BY dea.location order by dea.location, dea.date) as rolling_people_vaccinated
+from Covid_deaths dea
+join Covid_vaccination vac
+	on dea.location = vac.location
+	and dea.date = vac.date
+where dea.continent is not null
+
+
+-- Use CTE
+
+with PopvsVac(Continent, Location, Date, Population, New_Vaccinations, rolling_people_vaccinated)
+as
+(
+select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
+sum(cast(vac.new_vaccinations as int)) over (Partition by dea.location order by dea.location,
+dea.date) as rolling_people_vaccinated
+from Covid_deaths dea
+join Covid_vaccination vac 
+on dea.location = vac.location and dea.date= vac.date
+where dea.continent is not null
+)
+select *, (rolling_people_vaccinated/population)*100
+from PopvsVac
+
+-- TEMP TABLE
+
+DROP Table if exists PercentPopulationVaccinated
+Create Table PercentPopulationVaccinated
+(
+Continent nvarchar(255),
+Location nvarchar(255),
+Date datetime,
+Population numeric,
+New_vaccinations numeric,
+RollingPeopleVaccinated numeric
+)
+Insert into PercentPopulationVaccinated
+select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
+sum(cast(vac.new_vaccinations as int)) over (Partition by dea.location order by dea.location,
+dea.date) as rolling_people_vaccinated
+from Covid_deaths dea
+join Covid_vaccination vac 
+on dea.location = vac.location and dea.date= vac.date
+
+Select *,(RollingPeopleVaccinated*1.0/Population)*100 as PercentageVaccinated 
+From PercentPopulationVaccinated
+
+
+-- Creating View 
+
+CREATE VIEW Percentage_population_vaccinated as
+select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
+sum(cast(vac.new_vaccinations as int)) over (Partition by dea.location order by dea.location,
+dea.date) as RollingPeopleVaccinated
+from Covid_deaths dea
+join Covid_vaccination vac 
+on dea.location = vac.location and dea.date= vac.date
+where dea.continent is not null
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
