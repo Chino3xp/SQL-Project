@@ -151,7 +151,6 @@ dea.date) as RollingPeopleVaccinated
 from Covid_deaths dea
 join Covid_vaccination vac 
 on dea.location = vac.location and dea.date= vac.date
-
 where dea.continent is not null
 
 </sql><current_tab id="0"/></tab_sql></sqlb_project>
