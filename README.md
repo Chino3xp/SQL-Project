@@ -1,5 +1,6 @@
 # SQL-Project
 #Exploring covid-19 Data using SQL
+
 This is a brief summary of the project
 
 INTRODUCTION
