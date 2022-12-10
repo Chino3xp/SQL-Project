@@ -3,6 +3,7 @@
 
 
 INTRODUCTION
+
 In this project, Covid-19 dataset was gotten from ourworldindata.org and i explored the data using Sqlite to analyze and gather insights to be used for visualization in
 tableau.
 
