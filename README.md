@@ -23,7 +23,7 @@ The second query was to look at total cases vs population to get the Percentage 
 Countries with the highest infection rate compared to the population was checked and it showed Cryprus as the highest infection rate compared to the population and 
 Faeroe islands comes in second.
 
-Countries with the highest death count per population showed the United States as top countrie with the highest death count per population.
+Countries with the highest death count per population showed the United States as top country with the highest death count per population.
 
 Using Joins, the Total population vs vaccinations was querried from the two tables Covid_deaths and Covid_vaccinations.
 
