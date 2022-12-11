@@ -3,16 +3,14 @@
 
 This is a brief summary of the project
 
-# INTRODUCTION
+## INTRODUCTION
 
-In this project, Covid-19 dataset was gotten from ourworldindata.org and i explored the data using Sqlite to analyze and gather insights to be used for visualization in
-tableau.
+In this project, Covid-19 dataset was gotten from ourworldindata.org and i explored the data using DB Browser SQlite to analyze and gather insights to be used for visualization in tableau.
 
 
 ## ABOUT THE DATA
 
-After downloading the data, i removed some columns that are not relevant in my analysis using MS Excel and also divided the data into two, namely, Covid_deaths and Covid_vaccinations
-after this, i uploaded them in a sqlite database
+After downloading the data, i removed some columns that are not relevant in my analysis using MS Excel and also divided the data into two, namely, Covid_deaths and Covid_vaccinations after this, i uploaded them in a sqlite database
 
 ## INSIGHTS FROM THE ANALYSIS
 
