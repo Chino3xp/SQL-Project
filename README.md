@@ -9,12 +9,12 @@ In this project, Covid-19 dataset was gotten from ourworldindata.org and i explo
 tableau.
 
 
-# ABOUT THE DATA
+## ABOUT THE DATA
 
 After downloading the data, i removed some columns that are not relevant in my analysis using MS Excel and also divided the data into two, namely, Covid_deaths and Covid_vaccinations
 after this, i uploaded them in a sqlite database
 
-# INSIGHTS FROM THE ANALYSIS
+## INSIGHTS FROM THE ANALYSIS
 
 The first query was written to find the death percentage in Nigeria which shows that as of 29th of October 2022, Nigeria has a death percentage of 1.18%
 
